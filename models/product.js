@@ -38,9 +38,7 @@ module.exports = class Product {
 
     static findProductById(productId, cb){
         getProducts(products => {
-            let product = products.find( product => {
-                product.id === productId;
-            })
+            let product = products.find( product => product.id === productId );
             cb(product);
         })
     }

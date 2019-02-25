@@ -29,10 +29,13 @@ exports.getOrders=(req, res, next) => {
 
 exports.getProductId = (req,res,next) => {
     let productId = req.params.productId;
-    Product.findProductById(productId, product =>{
-        console.log(product);
+    Product.findProductById(productId, product => {
+        res.render("shop/product-detail", {
+            pageTitle: "Product Details",
+            path:"/products",
+            product: product
+        });
     });
-    res.redirect('/');
 }
 
 exports.getCart = (req, res, next) => {
@@ -40,6 +43,12 @@ exports.getCart = (req, res, next) => {
         pageTitle: 'Cart',
         path:'/cart'
     })
+}
+
+exports.postCart = (req, res, next) => {
+    let productId = req.body.productId;
+    console.log(productId);
+    res.redirect('/');
 }
 
 exports.getCheckOut = (req, res, next) => {
