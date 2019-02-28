@@ -48,8 +48,9 @@ exports.getCart = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
     let productId = req.body.productId;
-    Cart.getCartData(productId, cart =>{
-        console.log(cart)
+    //retrieve products from list to look up
+    Product.findProductById(productId, product => {
+        Cart.addProduct(productId, product.price);
     })
     res.redirect('/');
 }

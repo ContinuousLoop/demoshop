@@ -5,35 +5,43 @@ const rootDir = require("../utility/path");
 const _path = path.join(rootDir, 'data', 'cart.json')
 
 module.exports = class Cart{
-        // Find cart data to read from.
-        static getCartData(productId, cb){
-            fs.readFile(_path, (err, data) => {
-                let cart = {
-                    products: [],
-                    price: 0
-                };
-
-                if(!err){ 
-                    cart = JSON.parse(data)
+    //find cart data.
+    static addProduct(productId, productPrice){
+        fs.readFile(_path,(err, data) => {
+            //if there is no data, create a cart.
+            let cart = {
+                products:[],
+                price:0
+            }
+            //if there is data, read from file and parse.
+            if(!err){
+                cart = JSON.parse(data)
+            }
+            //see if product exists.
+            let productIndex = cart.products.findIndex(product => product.id === productId);
+            let product = cart.products[productIndex];
+            if(product){
+                //if product exists, update quantity & price & add to cart
+                product = cart.products[productIndex];
+                product.qty ++
+                cart.products[productIndex] = product
+            } else {
+                //if product does not exist, add the quantity and ID.
+                product = {
+                    qty:1, 
+                    id:productId
                 }
-                let updatedProduct
-                const existingProduct = cart.products.find(product => product.id === productId);
-                if(existingProduct){
-                    updatedProduct = {...existingProduct};
-                    updatedProduct.qty ++;
-                } else {
-                    updatedProduct = {id:productId, qty:1};
-                }
-                
+                cart.products = [...cart.products, product]
+            }
+            
+            cart.price = cart.price + +productPrice
 
-                // Set data to either be blank array, or set it to be JSON data.
-                
-                
+            fs.writeFile(_path, JSON.stringify(cart), error =>{
+                console.log(error);
             })
-        }
-        
-        //check if item exists in data,
-        //If data exists, increase quantity else add the item 
+            
+        })
+    }
 }
 
 
