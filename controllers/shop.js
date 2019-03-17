@@ -40,9 +40,23 @@ exports.getProductId = (req,res,next) => {
 }
 
 exports.getCart = (req, res, next) => {
-    res.render('shop/cart', {
-        pageTitle: 'Cart',
-        path:'/cart'
+    let cart = [];
+    //Get the list of products and match the cart ID with product ID
+    Product.fetchAll(products => {
+        // console.log(products[0]);
+        Cart.getCart(cartItems => {
+        // console.log(cartItems.products);
+            for(let item of cartItems.products) {
+                let cartItem = products.find( product => product.id === item.id);
+                if(cartItem){
+                    cart.push({productData: cartItem, qty:1});
+                }
+            }
+            res.render('shop/cart',{
+                pageTitle:'Cart',
+                path:'/cart',
+            })
+        })
     })
 }
 

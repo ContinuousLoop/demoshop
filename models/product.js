@@ -3,6 +3,7 @@ const rootDir = require('../utility/path');
 const path = require('path');
 
 const _path = path.join(rootDir, 'data', 'products.json');
+console.log(_path);
 
 const getProducts = callback => {
     fs.readFile(_path, (err, data) => {
@@ -35,7 +36,9 @@ module.exports = class Product {
                     console.log(error);
                 })
             } else {
-                this.id = Math.random().toString();
+                this.id = Math
+                    .random()
+                    .toString();
                 products.push(this);
                 fs.writeFile(_path, JSON.stringify(products), (err) => {
                     console.log(err);
@@ -45,14 +48,23 @@ module.exports = class Product {
         })
     }
 
-        static fetchAll(callback) {
-            getProducts(callback);
-        }
-
-        static findProductById(productId, cb) {
-            getProducts(products => {
-                let product = products.find(product => product.id === productId);
-                cb(product);
-            })
-        }
+    static fetchAll(callback) {
+        getProducts(callback);
     }
+
+    static findProductById(productId, cb) {
+        getProducts(products => {
+            let product = products.find(product => product.id === productId);
+            cb(product);
+        })
+    }
+
+    static deleteProduct(productId) {
+        getProducts(products => {
+            let newProducts = products.filter(product => product.id !== productId);
+            fs.writeFile(_path, JSON.stringify(newProducts), error => {
+                console.log(error);
+            })
+        })
+    }
+}
